@@ -2,7 +2,7 @@
 pipeline {
     agent any
     tools {
-        maven 'Maven'
+        maven 'maven'
     }
     stages {
         stage('increment version') {
@@ -29,10 +29,10 @@ pipeline {
         stage('build image') {
             steps {
                 script {
-                    echo "building the docker image..."
-                    withCredentials([usernamePassword(credentialsId: '	docker-hub', passwordVariable: 'PASS', usernameVariable: 'USER')]){
+                    echo 'building the docker image...'
+                    withCredentials([usernamePassword(credentialsId: 'docker-hub', passwordVariable: 'PASS', usernameVariable: 'USER' )]){
                         sh "docker build -t anoopap/my-re:${IMAGE_NAME} ."
-                        sh 'echo $PASS | docker login -u $USER --password-stdin'
+                        sh "echo $PASS | docker login -u $USER --password-stdin"
                         sh "docker push anoopap/my-re:${IMAGE_NAME}"}
                 }
             }
@@ -47,7 +47,7 @@ pipeline {
         stage('commit version update'){
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: 'gitlab-credentials', passwordVariable: 'PASS', usernameVariable: 'USER')]){
+                    withCredentials([usernamePassword(credentialsId: '15061247', passwordVariable: 'PASS', usernameVariable: 'USER' )]){
                         sh 'git config --global user.email "jenkins@example.com"'
                         sh 'git config --global user.name "jenkins"'
 
@@ -55,10 +55,10 @@ pipeline {
                         sh 'git branch'
                         sh 'git config --list'
 
-                        sh "git remote set-url origin https://${USER}:${PASS}@gitlab.com/twn-devops-bootcamp/latest/08-jenkins/java-maven-app.git"
+                        sh "git remote set-url origin https://${USER}:${PASS}@https://gitlab.com/anoop1214727/version-build.git"
                         sh 'git add .'
                         sh 'git commit -m "ci: version bump"'
-                        sh 'git push origin HEAD:jenkins-jobs'
+                        sh 'git push origin main'
                     }
                 }
             }
